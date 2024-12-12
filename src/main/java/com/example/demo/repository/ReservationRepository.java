@@ -15,12 +15,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("select r from Reservation r join fetch r.user join fetch r.item")
     List<Reservation> findAll();
 
-    List<Reservation> findByUserIdAndItemId(Long userId, Long itemId);
-
-    List<Reservation> findByUserId(Long userId);
-
-    List<Reservation> findByItemId(Long itemId);
-
     @Query("SELECT r FROM Reservation r " +
             "WHERE r.item.id = :id " +
             "AND NOT (r.endAt <= :startAt OR r.startAt >= :endAt) " +

@@ -8,6 +8,7 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.ReservationConflictException;
 import com.example.demo.repository.ItemRepository;
 import com.example.demo.repository.ReservationRepository;
+import com.example.demo.repository.ReservationRepositoryQuery;
 import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +24,18 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final RentalLogService rentalLogService;
 
+    private final ReservationRepositoryQuery reservationRepositoryQuery;
+
     public ReservationService(ReservationRepository reservationRepository,
                               ItemRepository itemRepository,
                               UserRepository userRepository,
-                              RentalLogService rentalLogService) {
+                              RentalLogService rentalLogService,
+                              ReservationRepositoryQuery reservationRepositoryQuery) {
         this.reservationRepository = reservationRepository;
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.rentalLogService = rentalLogService;
+        this.reservationRepositoryQuery = reservationRepositoryQuery;
     }
 
     @Transactional
@@ -67,26 +72,12 @@ public class ReservationService {
         }).toList();
     }
 
-    // TODO: 5. QueryDSL 검색 개선
     public List<ReservationResponseDto> searchAndConvertReservations(Long userId, Long itemId) {
 
-        List<Reservation> reservations = searchReservations(userId, itemId);
-
+        List<Reservation> reservations = reservationRepositoryQuery.searchReservation(userId, itemId);
         return convertToDto(reservations);
     }
 
-    public List<Reservation> searchReservations(Long userId, Long itemId) {
-
-        if (userId != null && itemId != null) {
-            return reservationRepository.findByUserIdAndItemId(userId, itemId);
-        } else if (userId != null) {
-            return reservationRepository.findByUserId(userId);
-        } else if (itemId != null) {
-            return reservationRepository.findByItemId(itemId);
-        } else {
-            return reservationRepository.findAll();
-        }
-    }
 
     private List<ReservationResponseDto> convertToDto(List<Reservation> reservations) {
         return reservations.stream()
