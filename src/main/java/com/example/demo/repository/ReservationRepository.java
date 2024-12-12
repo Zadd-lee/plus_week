@@ -8,10 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+
+    @Query("select r from Reservation r join fetch r.user join fetch r.item")
+    List<Reservation> findAll();
 
     List<Reservation> findByUserIdAndItemId(Long userId, Long itemId);
 

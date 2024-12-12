@@ -50,7 +50,6 @@ public class ReservationService {
         rentalLogService.save(rentalLog);
     }
 
-    // TODO: 3. N+1 문제
     public List<ReservationResponseDto> getReservations() {
         List<Reservation> reservations = reservationRepository.findAll();
 
