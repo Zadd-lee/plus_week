@@ -17,7 +17,7 @@ public class RentalLogService {
     public void save(RentalLog rentalLog) {
         rentalLogRepository.save(rentalLog);
         if (rentalLog != null) {
-            throw new RuntimeException();
+//            throw new RuntimeException();
         }
     }
 }

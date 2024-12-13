@@ -1,8 +1,14 @@
 package com.example.demo.controller;
 
+import com.example.demo.constants.ReservationStatus;
 import com.example.demo.dto.ReservationRequestDto;
+import com.example.demo.dto.ReservationResponseDto;
 import com.example.demo.service.ReservationService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
@@ -14,26 +20,27 @@ public class ReservationController {
     }
 
     @PostMapping
-    public void createReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
-        reservationService.createReservation(reservationRequestDto.getItemId(),
-                                            reservationRequestDto.getUserId(),
-                                            reservationRequestDto.getStartAt(),
-                                            reservationRequestDto.getEndAt());
+    public ResponseEntity<ReservationResponseDto> createReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
+        ReservationResponseDto reservation = reservationService.createReservation(reservationRequestDto.getItemId(),
+                reservationRequestDto.getUserId(),
+                reservationRequestDto.getStartAt(),
+                reservationRequestDto.getEndAt());
+        return new ResponseEntity<>(reservation, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}/update-status")
-    public void updateReservation(@PathVariable Long id, @RequestBody String status) {
-        reservationService.updateReservationStatus(id, status);
+    public ResponseEntity<ReservationResponseDto> updateReservation(@PathVariable Long id, @RequestBody ReservationStatus status) {
+        return new ResponseEntity<>(reservationService.updateReservationStatus(id, status), HttpStatus.OK);
     }
 
     @GetMapping
-    public void findAll() {
-        reservationService.getReservations();
+    public ResponseEntity<List<ReservationResponseDto>> findAll() {
+        return new ResponseEntity<>(reservationService.getReservations(), HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public void searchAll(@RequestParam(required = false) Long userId,
-                          @RequestParam(required = false) Long itemId) {
-        reservationService.searchAndConvertReservations(userId, itemId);
+    public ResponseEntity<List<ReservationResponseDto>> searchAll(@RequestParam(required = false) Long userId,
+                                                                  @RequestParam(required = false) Long itemId) {
+        return new ResponseEntity<>(reservationService.searchAndConvertReservations(userId, itemId), HttpStatus.OK);
     }
 }
