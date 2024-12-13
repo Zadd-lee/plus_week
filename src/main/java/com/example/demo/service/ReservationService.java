@@ -101,7 +101,7 @@ public class ReservationService {
                 .toList();
     }
 
-    // TODO: 7. 리팩토링
+
     @Transactional
     public ReservationResponseDto updateReservationStatus(Long reservationId, ReservationStatus status) {
         Reservation reservation = reservationRepository.findByIdOrThrow(reservationId);
